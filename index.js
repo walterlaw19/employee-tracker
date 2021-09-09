@@ -1,3 +1,13 @@
+const express = require('express');
+const router = express.Router();
+
+router.use(require('./routes/apiRoutes/departmentRoute'));
+router.use(require('./routes/apiRoutes/employeeRoute'));
+router.use(require('./routes/apiRoutes/roleRoute'));
+
+
+
+
 
 // Add a Deparment Inquirer
 inquirer.prompt([
@@ -99,6 +109,11 @@ inquirer.prompt([
         name: 'roleInDepartment',
         message: 'Select a Department to add this role',
         choices: ['Perl', 'Mozilla', 'MIT', 'IBM', 'Zlib'] // needs to update
+    },
+    {
+        type: 'manager',
+        name: 'manager',
+        message: 'who is the manager'
     }
 ]).then((answers) => {
     console.log(answers)
@@ -117,3 +132,8 @@ inquirer.prompt([
 // --- viewEmployees()
 // ---- ..... etc
 // 3. Exit (Optional)
+
+
+
+
+module.exports = router;
