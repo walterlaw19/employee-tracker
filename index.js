@@ -1,5 +1,19 @@
 const express = require('express');
 const router = express.Router();
+const inquirer = require('inquirer');
+const mysql = require('mysql');
+
+
+
+
+db.connect(err => {
+    if (err) throw err;
+    console.log('Database connected.');
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+});
+
 
 router.use(require('./routes/apiRoutes/departmentRoute'));
 router.use(require('./routes/apiRoutes/employeeRoute'));
@@ -7,9 +21,8 @@ router.use(require('./routes/apiRoutes/roleRoute'));
 
 
 
-
-
-// Add a Deparment Inquirer
+function init() {
+    // Add a Deparment Inquirer
 inquirer.prompt([
     {
         type: 'input',
@@ -27,9 +40,9 @@ inquirer.prompt([
 ]).then((answers) => {
     console.log(answers)
 
-    const desiredOutput = generateMarkdown(answers);
+    // const newDeptName = departments(answers);
 
-    writeToFile('./dist/READme.md', desiredOutput)
+    // writeToFile('./dist/READme.md', desiredOutput)
 
 });
 
@@ -70,9 +83,9 @@ inquirer.prompt([
 ]).then((answers) => {
     console.log(answers)
 
-    const desiredOutput = generateMarkdown(answers);
+    // const desiredOutput = generateMarkdown(answers);
 
-    writeToFile('./dist/READme.md', desiredOutput)
+    // writeToFile('./dist/READme.md', desiredOutput)
 
 });
 
@@ -118,11 +131,15 @@ inquirer.prompt([
 ]).then((answers) => {
     console.log(answers)
 
-    const desiredOutput = generateMarkdown(answers);
+    // const desiredOutput = generateMarkdown(answers);
 
-    writeToFile('./dist/READme.md', desiredOutput)
+    // writeToFile('./dist/READme.md', desiredOutput)
 
 });
+}
+
+
+init();
 
 
 // write functions for actions
