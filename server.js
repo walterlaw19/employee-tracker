@@ -15,3 +15,19 @@ db.connect(err => {
         console.log(`Server running on port ${PORT}`);
     });
 });
+
+
+
+
+
+
+// const router = express.Router();
+
+// router.use(require('./routes/apiRoutes/departmentRoute'));
+// router.use(require('./routes/apiRoutes/employeeRoute'));
+// router.use(require('./routes/apiRoutes/roleRoute'));
+
+
+
+
+// module.exports = router;
