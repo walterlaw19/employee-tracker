@@ -13,7 +13,7 @@ function init() {
         {
             type: 'list',
             name: 'menu',
-            message: 'What would you like to do first?',
+            message: 'What would you like to do?',
             choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Exit Database']
         }
     ]).then(selectedAnswer => {
@@ -71,7 +71,9 @@ function viewAllRoles() {
 }
 
 function viewAllEmployees() {  // NEEDS MORE employees things
-    const sql = 'SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON rol.department_id = department.id ORDER by employee.id';  // needs more columns for 
+    const sql = 'SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS departmentName, role.salary, manager.first_name AS managerFirstName, manager.last_name AS managerLastName, role.department_id FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id ORDER by employee.id';  // needs more columns for 
+
+    
     db.query(sql, (err, result) => {
         if (err) throw err;
         console.log('ALL EMPLOYEES')
