@@ -209,11 +209,7 @@ function addEmployee() {
                     value: roleData.id
                 }
             });
-            db.query('SELECT * FROM employee', (err, result) => {
-                if (err) throw err;
-                console.table(result);
-                
-            })
+
             // console.log(role)
 
             // // Add a employee Inquirer
@@ -249,37 +245,72 @@ function addEmployee() {
                     name: 'newRoleInDepartment',
                     message: 'Select a Role for this employee',
                     choices: role
-                },
-                {
-                    type: 'number',
-                    name: 'managerId',
-                    message: 'Please Enter the ID Manager to who this employee will be under',
-                    validate: addManagerId => {
-                        if (addManagerId) {
-                            return true;
-                        } else {
-                            console.log('Please a NUMERIC ID Manager for employee!');
-                            return false;
-                        }
-                    }
                 }
-            ]).then((newEmployeeName) => {
-                // console.log(newEmployeeName)
-                const sql = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)';
-                const params = [newEmployeeName.employeeName, newEmployeeName.employeeLastName, newEmployeeName.newRoleInDepartment, newEmployeeName.managerId];
-                db.query(sql, params, (err, result) => {
-                    if (err) throw err;
-                    console.log(''),
-                        console.log('EMPLOYEE "' + newEmployeeName.employeeName + '" HAS BEEN ADDED TO DATABASE'),
-                        console.log('');
 
-                    db.query('SELECT * FROM employee', (err, result) => {
-                        if (err) throw err;
-                        console.table(result);
-                        init();
-                    })
-                });
-            });
+            ]).then((newEmployeeName) => {
+
+                db.promise().query('SELECT employee.first_name, employee.last_name, employee.id FROM employee')
+
+                    .then(([employeeInData]) => {
+                        // console.log(employeeInData);
+
+
+                        var managerAsssigned = employeeInData.map((managerData) => {
+                            return {
+                                name: managerData.first_name,
+                                value: managerData.id
+                            }
+                        });
+
+
+                        inquirer.prompt([
+                            {
+                                type: 'list',
+                                name: 'newEmployeeInDepartment',
+                                message: 'Select a Manager for this employee',
+                                choices: managerAsssigned
+                            }
+                        ]).then((newManager) => {
+
+                            // console.log(newManager)
+
+                            const sql = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)';
+                            const params = [newEmployeeName.employeeName, newEmployeeName.employeeLastName, newEmployeeName.newRoleInDepartment, newManager.newEmployeeInDepartment];
+                            db.query(sql, params, (err, result) => {
+                                if (err) throw err;
+                                console.log(''),
+                                    console.log('EMPLOYEE "' + newEmployeeName.employeeName + '" HAS BEEN ADDED TO DATABASE'),
+                                    console.log('');
+
+                                db.query('SELECT * FROM employee', (err, result) => {
+                                    if (err) throw err;
+                                    console.table(result);
+                                    init();
+                                })
+                            });
+
+
+
+
+
+
+
+                            // db.query('INSERT INTO employee (manager_id', [newManager.newEmployeeInDepartment], (err, result) => {
+                            //     if (err) throw err;
+                            // })
+
+                        })
+
+
+
+
+
+
+
+                        // console.log(newEmployeeName)
+
+                    });
+            })
         })  // for DYNAMIC version 
 }
 
