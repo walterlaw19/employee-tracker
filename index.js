@@ -59,19 +59,19 @@ function viewAllDepartments() {
 }
 
 function viewAllRoles() {
-    const sql = 'SELECT * FROM role';
+    const sql = 'SELECT role.id, role.title, department.department_name, role.salary FROM role LEFT JOIN department on role.department_id = department.id';
     db.query(sql, (err, result) => {
         if (err) throw err;
         console.log('');
-        console.log('======ALL Roles=====');
+        console.log('===============ALL Roles==============');
         console.log('');
         console.table(result);
         init()
     })
 }
 
-function viewAllEmployees() {
-    const sql = 'SELECT * FROM employee';
+function viewAllEmployees() {  // NEEDS MORE employees things
+    const sql = 'SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON rol.department_id = department.id ORDER by employee.id';  // needs more columns for 
     db.query(sql, (err, result) => {
         if (err) throw err;
         console.log('ALL EMPLOYEES')
@@ -81,6 +81,8 @@ function viewAllEmployees() {
 }
 
 function addDepartment() {
+
+    
     // Add a Deparment Inquirer
     inquirer.prompt([
         {
@@ -109,56 +111,143 @@ function addDepartment() {
             db.query('SELECT * FROM department', (err, result) => {
                 if (err) throw err;
                 console.table(result);
-                init();  
+                init();
             })
         });
     });
 }
 
+
+
+
+
+
+
 function addRole() {
-    // Add a Role Inquirer
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'newRole',
-            message: 'what is the name of this role?',
-            validate: newRoldName => {
-                if (newRoldName) {
-                    return true;
-                } else {
-                    console.log('Please enter the name of this role!');
-                    return false;
-                }
-            }
-        },
-        {
-            type: 'input',
-            name: 'salary',
-            message: 'what is the salary?',
-            validate: roleSalary => {
-                if (roleSalary) {
-                    return true;
-                } else {
-                    console.log('Please enter a number!');
-                    return false;
-                }
-            }
-        },
-        {
-            type: 'list',
-            name: 'roleInDepartment',
-            message: 'Select a Department to add this role',
-            choices: ['Perl', 'Mozilla', 'MIT', 'IBM', 'Zlib'] // needs to update
-        }
-    ]).then((answers) => {
-        console.log(answers)
+    // const sql = 'SELECT * FROM department'
+    // db.promise().query(sql, (error, response) => {
+    //     if (error) throw error;
+    //     let deptNamesArray = [];
+    //     response.forEach((department) => { deptNamesArray.push(department.department_name); });
+    //     deptNamesArray.push('Create Department');
 
-        // const desiredOutput = generateMarkdown(answers);
 
-        // writeToFile('./dist/READme.md', desiredOutput)
 
-    });
+
+
+    // db.promise().query('SELECT department.department_name, department.id FROM department')
+
+    //     .then(([deptInData]) => {
+    //         console.log(deptInData);
+    //         // var dpt = deptInData.values(department_name);
+    //         // console.log(dpt)
+
+
+    //         var department = deptInData.values((department_name, id) => ({
+    //             name: department_name,
+    //             value: id
+    //         }
+    //             , console.log(department)
+    //         ));
+
+    db.query('SELECT * FROM department', (err, result) => {
+        if (err) throw err;
+        console.table(result);
+        
+    })
+
+
+
+
+            // Add a Role Inquirer
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'newRole',
+                    message: 'what is the name of this role?',
+                    validate: addNewRoldName => {
+                        if (addNewRoldName) {
+                            return true;
+                        } else {
+                            console.log('Please enter the name of this role!');
+                            return false;
+                        }
+                    }
+                },
+                {
+                    type: 'input',
+                    name: 'salary',
+                    message: 'what is the salary?',
+                    validate: roleSalary => {
+                        if (roleSalary) {
+                            return true;
+                        } else {
+                            console.log('Please enter a number!');
+                            return false;
+                        }
+                    }
+                },
+                
+                {
+                    type: 'number',
+                    name: 'roleInDepartment',
+                    message: 'Please Enter the ID Department Where This Role Wil Be Located',
+                    validate: roleSalary => {
+                        if (roleSalary) {
+                            return true;
+                        } else {
+                            console.log('Please a NUMERIC ID Department for role!');
+                            return false;
+                        }
+                    }
+                    
+                },
+
+               
+
+// DYNAMIC version to add rol in already created DEPARTMENT BELOW
+
+
+                // {
+                //     type: 'list',
+                //     name: 'roleInDepartment',
+                //     message: 'Select a Department to add this role',
+                //     choices: [department] // needs to update HELP!!!!
+                // }
+// DYNAMIC version to add rol in already created DEPARTMENT ABOVE
+
+
+            ]).then((newCreatedRole) => {
+                const sql = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
+                const params = [newCreatedRole.newRole, newCreatedRole.salary, newCreatedRole.roleInDepartment];
+                db.query(sql, params, (err, result) => {
+                    if (err) throw err;
+                    console.log(''),
+                        console.log('ROLE "' + newCreatedRole.newRole + '" HAS BEEN ADDED TO DATABASE'),
+                        console.log('');
+
+                    db.query('SELECT role.id, role.title, department.department_name, role.salary FROM role LEFT JOIN department on role.department_id = department.id', (err, result) => {
+                        if (err) throw err;
+                        console.table(result);
+                        init();
+                    })
+                });
+            });
+        // })
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function addEmployee() {
     // // Add a employee Inquirer
@@ -167,8 +256,8 @@ function addEmployee() {
             type: 'input',
             name: 'employeeName',
             message: 'what is the name of the employee?',
-            validate: employeeName => {
-                if (employeeName) {
+            validate: addEmployeeName => {
+                if (addEmployeeName) {
                     return true;
                 } else {
                     console.log('Please enter the name of the employee!');
@@ -180,8 +269,8 @@ function addEmployee() {
             type: 'input',
             name: 'employeeLastName',
             message: 'what is the last name of the employee?',
-            validate: employeeLastName => {
-                if (employeeLastName) {
+            validate: addEmployeeLastName => {
+                if (addEmployeeLastName) {
                     return true;
                 } else {
                     console.log('Please enter the last name of the employee!');
@@ -190,28 +279,55 @@ function addEmployee() {
             }
         },
         {
-            type: 'list',
-            name: 'roleInDepartment',
-            message: 'Select a Department to add this role',
-            choices: ['Perl', 'Mozilla', 'MIT', 'IBM', 'Zlib'] // needs to update
+            type: 'number',
+            name: 'newRoleInDepartment',
+            message: 'Please Enter the ID Role  for this employee',
+            validate: addRoleDepartment => {
+                if (addRoleDepartment) {
+                    return true;
+                } else {
+                    console.log('Please a NUMERIC ID Role employee!');
+                    return false;
+                }
+            }
         },
         {
-            type: 'manager',
-            name: 'manager',
-            message: 'who is the manager'
+            type: 'number',
+            name: 'managerId',
+            message: 'Please Enter the ID Manager to who this employee will be under',
+            validate: addManagerId => {
+                if (addManagerId) {
+                    return true;
+                } else {
+                    console.log('Please a NUMERIC ID Manager for employee!');
+                    return false;
+                }
+            }
         }
-    ]).then((answers) => {
-        console.log(answers)
+    ]).then((newEmployeeName) => {
+        console.log(newEmployeeName)
+        const sql = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)';
+        const params = [newEmployeeName.employeeName, newEmployeeName.employeeLastName, newEmployeeName.newRoleInDepartment, newEmployeeName.managerId];
+        db.query(sql, params, (err, result) => {
+            if (err) throw err;
+            console.log(''),
+                console.log('EMPLOYEE "' + newEmployeeName.employeeName + '" HAS BEEN ADDED TO DATABASE'),
+                console.log('');
 
-        // const desiredOutput = generateMarkdown(answers);
-
-        // writeToFile('./dist/READme.md', desiredOutput)
-
+            db.query('SELECT * FROM employee', (err, result) => {
+                if (err) throw err;
+                console.table(result);
+                init();
+            })
+        });
     });
 
 }
 
 function updateEmployee() {
+// select employee
+
+// update role_id
 
 }
 
