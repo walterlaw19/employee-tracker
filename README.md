@@ -46,17 +46,17 @@ D. quit
 
 7. You can go through the Menu and select as desired. It is recommended to always enter a Department first, then Role and finally an Employee
 
-9. Once you are done, you can selecte "exit database" or press CTRL + C in your keyboard to stop the application.
+9. Once you are done, you can select "exit database" or press CTRL + C in your keyboard to stop the application.
 
 
 ## Demo
 
-[Click here to see a demo video](https://drive.google.com/file/d/1EkY0NhtOeCyj934PYp1nhqgi_yBgMbzD/view?usp=sharing)
+[Click here to see a demo video](https://drive.google.com/file/d/16Q2Lg6_rXBT_Vd8t-Xl_Y5PxtOUQoSNq/view?usp=sharing)
 
-![](Readme-images/screenshot2.PNG) "inquirer prompting questions"
-![](Readme-images/screenshot1.PNG) "Readme generated"
+![](Readme-images/screenshot1.PNG) "Run NODE INDEX and view all deparments/roles/employees"
+![](Readme-images/screenshot2.PNG) "Add departments/roles/employees and update employees"
 
-[Click here to see a demo video](https://drive.google.com/file/d/1EkY0NhtOeCyj934PYp1nhqgi_yBgMbzD/view?usp=sharing)
+
 
 ## Usage
 
