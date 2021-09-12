@@ -51,7 +51,7 @@ function viewAllDepartments() {
     db.query(sql, (err, result) => {
         if (err) throw err;
         console.log('');
-        console.log('======ALL DEPARTMENTS=====');
+        console.log('====ALL DEPARTMENTS===');
         console.log('');
         console.table(result);
         init()
@@ -63,7 +63,7 @@ function viewAllRoles() {
     db.query(sql, (err, result) => {
         if (err) throw err;
         console.log('');
-        console.log('===============ALL Roles==============');
+        console.log('================ALL ROLES===============');
         console.log('');
         console.table(result);
         init()
@@ -76,7 +76,9 @@ function viewAllEmployees() {  // NEEDS MORE employees things
 
     db.query(sql, (err, result) => {
         if (err) throw err;
-        console.log('ALL EMPLOYEES')
+        console.log('');
+        console.log('=============================================ALL EMPLOYEES===============================================');
+        console.log('');
         console.table(result);
         init()
     })
@@ -120,17 +122,12 @@ function addDepartment() {
 }
 
 
-
-
-
-
-
 function addRole() {
 
     db.promise().query('SELECT department.department_name, department.id FROM department')
 
         .then(([deptInData]) => {
-            console.log(deptInData);
+            // console.log(deptInData);
 
 
             var department = deptInData.map((deptData) => {
@@ -139,7 +136,7 @@ function addRole() {
                     value: deptData.id
                 }
             });
-            console.log(department)
+            // console.log(department)
 
 
             // Add a Role Inquirer
@@ -198,17 +195,13 @@ function addRole() {
 
 
 
-
-
-
 function addEmployee() {
     // Query for Role list for employee
 
     db.promise().query('SELECT role.title, role.id FROM role')
 
         .then(([roleInData]) => {
-            console.log(roleInData);
-
+            // console.log(roleInData);
 
             var role = roleInData.map((roleData) => {
                 return {
@@ -216,8 +209,12 @@ function addEmployee() {
                     value: roleData.id
                 }
             });
-            console.log(role)
-
+            db.query('SELECT * FROM employee', (err, result) => {
+                if (err) throw err;
+                console.table(result);
+                
+            })
+            // console.log(role)
 
             // // Add a employee Inquirer
             inquirer.prompt([
@@ -247,44 +244,12 @@ function addEmployee() {
                         }
                     }
                 },
-                // TESTING DYNAMIC ===========================================================================
-
-
                 {
                     type: 'list',
                     name: 'newRoleInDepartment',
                     message: 'Select a Role for this employee',
                     choices: role
                 },
-
-
-
-
-
-
-                // TESTING DYNAMIC ===========================================================================
-            
-            
-            
-                // {
-                //     type: 'number',
-                //     name: 'newRoleInDepartment',
-                //     message: 'Please Enter the ID Role  for this employee',
-                //     validate: addRoleDepartment => {
-                //         if (addRoleDepartment) {
-                //             return true;
-                //         } else {
-                //             console.log('Please a NUMERIC ID Role employee!');
-                //             return false;
-                //         }
-                //     }
-                // },
-
-
-
-
-
-
                 {
                     type: 'number',
                     name: 'managerId',
@@ -299,7 +264,7 @@ function addEmployee() {
                     }
                 }
             ]).then((newEmployeeName) => {
-                console.log(newEmployeeName)
+                // console.log(newEmployeeName)
                 const sql = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)';
                 const params = [newEmployeeName.employeeName, newEmployeeName.employeeLastName, newEmployeeName.newRoleInDepartment, newEmployeeName.managerId];
                 db.query(sql, params, (err, result) => {
@@ -315,7 +280,7 @@ function addEmployee() {
                     })
                 });
             });
-        })  // for DYNAMIC version
+        })  // for DYNAMIC version 
 }
 
 function updateEmployee() {
