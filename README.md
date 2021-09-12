@@ -2,61 +2,71 @@
 
 
 
-GIVEN a command-line application that accepts user input
-<!-- WHEN I start the application
-THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role -->
+[![License: Artistic-2.0](https://img.shields.io/badge/License-Perl-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
 
-<!-- WHEN I choose to view all departments
-THEN I am presented with a formatted table showing department names and department ids -->
+## Description
+An application to save data for your company using inquirer, express and mysql. It allows you to create Departments, Roles and Employees as well as updating employees to new roles. With Console.Table, you are able to view a descriptibe table of all employees information.
 
-<!-- WHEN I choose to view all roles
-THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role -->
+[click here](sample-readme/sampleReadme.md)
 
-<!-- WHEN I choose to view all employees
-THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to -->
+## Table of Contents
 
-<!-- WHEN I choose to add a department  
-THEN I am prompted to enter the name of the department and that department is added to the database -->
-<!-- 
-WHEN I choose to add a role
-THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database -->
-
-<!-- WHEN I choose to add an employee  
-THEN I am prompted to enter the employee’s first name, last name, role, and manager and that employee is added to the database -->
-
-WHEN I choose to update an employee role
-THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
+* [Deployment](#deployment)
+* [Demo](#demo)
+* [Usage](#usage)
+* [License](#license)
+* [Contribution](#contribution)
+* [Questions](#questions)
 
 
+## Deployment
+
+click here:
+
+Link: 
 
 
-db.promise().query('SELECT role.title, role.id FROM role')
+## Demo
 
-        .then(([roleInData]) => {
-            console.log(roleInData);
+![](Readme-images/screenshot1.PNG) "type a note"
+![](Readme-images/screenshot2.PNG) "add a note"
+![](Readme-images/screenshot3.PNG) "review a note"
+![](Readme-images/screenshot4.PNG) "write a new note"
+![](Readme-images/screenshot5.PNG) "delete a note"
 
 
-            var role = roleInData.map((roleData) => {
-                return {
-                    name: roleData.title,
-                    value: roleData.id
-                }
-            });
-            console.log(role)
 
-            inquirer.prompt([
-                {
-                    type: 'number',
-                    name: 'managerId',
-                    message: 'Please Enter the ID Manager to who this employee will be under',
-                    validate: addManagerId => {
-                        if (addManagerId) {
-                            return true;
-                        } else {
-                            console.log('Please a NUMERIC ID Manager for employee!');
-                            return false;
-                        }
-                    }
-                }
-            ])
+
+## Usage
+
+You can use this application to save information of your company
+ 
+## License
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
+## contribution
+
+Please send me an email if you can want to contribute or submit any suggestions: walterlaw19@gmail.com
+
+
+
+## Questions
+
+If you have any questions or concerns, you can reach me at: walterlaw19@gmail.com
+
+or visit my GitHub: https://github.com/walterlaw19
+
+
+
+```
+Made by by Walter G
+```
+
+---
+##### © 2021 WG.
+
+
+
 

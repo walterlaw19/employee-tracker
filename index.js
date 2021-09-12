@@ -3,9 +3,6 @@ const mysql = require('mysql');
 const consoleTable = require('console.table');
 const db = require('./db/connection')
 
-
-
-
 function init() {
 
     // Choose what to do
@@ -17,7 +14,7 @@ function init() {
             choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Exit Database']
         }
     ]).then(selectedAnswer => {
-        // console.log(selectedAnswer);
+
         if (selectedAnswer.menu === 'View All Departments') {
             viewAllDepartments();
         }
@@ -36,7 +33,7 @@ function init() {
         if (selectedAnswer.menu === 'Add an Employee') {
             addEmployee();
         }
-        if (selectedAnswer.menu === 'Update an Employee') {
+        if (selectedAnswer.menu === 'Update an Employee Role') {
             updateEmployee();
         }
         if (selectedAnswer.menu === 'Exit Database') {
@@ -45,7 +42,7 @@ function init() {
     });
 }
 
-
+// View ALl Departments
 function viewAllDepartments() {
     const sql = 'SELECT * FROM department';
     db.query(sql, (err, result) => {
@@ -58,6 +55,7 @@ function viewAllDepartments() {
     })
 }
 
+// View All Rolees
 function viewAllRoles() {
     const sql = 'SELECT role.id, role.title, department.department_name, role.salary FROM role LEFT JOIN department on role.department_id = department.id';
     db.query(sql, (err, result) => {
@@ -70,10 +68,9 @@ function viewAllRoles() {
     })
 }
 
-function viewAllEmployees() {  // NEEDS MORE employees things
-    const sql = 'SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS departmentName, role.salary, manager.first_name AS managerFirstName, manager.last_name AS managerLastName, role.department_id FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id ORDER by employee.id';  // needs more columns for 
-
-
+// View All Employees
+function viewAllEmployees() {
+    const sql = 'SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS departmentName, role.salary, manager.first_name AS managerFirstName, manager.last_name AS managerLastName, role.department_id FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id ORDER by employee.id';
     db.query(sql, (err, result) => {
         if (err) throw err;
         console.log('');
@@ -83,11 +80,10 @@ function viewAllEmployees() {  // NEEDS MORE employees things
         init()
     })
 }
-
+// Add Department
 function addDepartment() {
 
-
-    // Add a Deparment Inquirer
+    // Add a Deparment Inquiry
     inquirer.prompt([
         {
             type: 'input',
@@ -103,7 +99,6 @@ function addDepartment() {
             }
         }
     ]).then((newDeptName) => {
-        // console.log(newDeptName.departmentName);
         const sql = 'INSERT INTO department (department_name) VALUES (?)';
         const params = [newDeptName.departmentName];
         db.query(sql, params, (err, result) => {
@@ -121,25 +116,20 @@ function addDepartment() {
     });
 }
 
-
+// Add Role
 function addRole() {
 
     db.promise().query('SELECT department.department_name, department.id FROM department')
 
         .then(([deptInData]) => {
-            // console.log(deptInData);
-
-
             var department = deptInData.map((deptData) => {
                 return {
                     name: deptData.department_name,
                     value: deptData.id
                 }
             });
-            // console.log(department)
 
-
-            // Add a Role Inquirer
+            // Add a Role Inquiry
             inquirer.prompt([
                 {
                     type: 'input',
@@ -190,29 +180,22 @@ function addRole() {
                     })
                 });
             });
-        })
-}
+        });
+};
 
-
-
+// Add Employee
 function addEmployee() {
-    // Query for Role list for employee
 
     db.promise().query('SELECT role.title, role.id FROM role')
 
         .then(([roleInData]) => {
-            // console.log(roleInData);
-
             var role = roleInData.map((roleData) => {
                 return {
                     name: roleData.title,
                     value: roleData.id
                 }
             });
-
-            // console.log(role)
-
-            // // Add a employee Inquirer
+            // add an Employee Inquiry
             inquirer.prompt([
                 {
                     type: 'input',
@@ -252,16 +235,13 @@ function addEmployee() {
                 db.promise().query('SELECT employee.first_name, employee.last_name, employee.id FROM employee')
 
                     .then(([employeeInData]) => {
-                        // console.log(employeeInData);
-
 
                         var managerAsssigned = employeeInData.map((managerData) => {
                             return {
-                                name: managerData.first_name,
+                                name: managerData.first_name + ' ' + managerData.last_name,
                                 value: managerData.id
                             }
                         });
-
 
                         inquirer.prompt([
                             {
@@ -271,8 +251,6 @@ function addEmployee() {
                                 choices: managerAsssigned
                             }
                         ]).then((newManager) => {
-
-                            // console.log(newManager)
 
                             const sql = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)';
                             const params = [newEmployeeName.employeeName, newEmployeeName.employeeLastName, newEmployeeName.newRoleInDepartment, newManager.newEmployeeInDepartment];
@@ -288,36 +266,62 @@ function addEmployee() {
                                     init();
                                 })
                             });
-
-
-
-
-
-
-
-                            // db.query('INSERT INTO employee (manager_id', [newManager.newEmployeeInDepartment], (err, result) => {
-                            //     if (err) throw err;
-                            // })
-
                         })
-
-
-
-
-
-
-
-                        // console.log(newEmployeeName)
-
                     });
-            })
-        })  // for DYNAMIC version 
-}
+            });
+        });
+};
 
+// Update Employee
 function updateEmployee() {
-    // select employee
 
-    // update role_id
+    db.promise().query('select * from employee')
+        .then(([viewEmployeeData]) => {
+
+            var employeeForChange = viewEmployeeData.map(({ first_name, id }) => ({
+                name: first_name,
+                value: id
+            }));
+
+            db.promise().query('select * from role')
+                .then(([viewRoleData]) => {
+                    var NewRoleforEmployee = viewRoleData.map(({ id, title }) => ({
+                        name: title,
+                        value: id
+                    }));
+
+                    // add employee update inquiry
+                    inquirer.prompt(
+                        [
+                            {
+                                type: "list",
+                                name: "selectedEmployee",
+                                message: "SELECT the Employee you want to update Role for :",
+                                choices: employeeForChange
+                            },
+                            {
+                                type: "list",
+                                name: "SelectedRole",
+                                message: "SELECT the New Role / Title of the Employee :",
+                                choices: NewRoleforEmployee
+                            }
+                        ])
+
+
+                        .then(resultForNewRole => {
+                            const sql = 'UPDATE employee SET role_id = ? WHERE id = ?';
+                            const params = [resultForNewRole.SelectedRole, resultForNewRole.selectedEmployee];
+                            
+                            db.query(sql, params, (err, result) => {
+                                if (err) throw err;
+                                console.log('');
+                                console.log('===========EMPLOYEE UPDATED - SELECT `VIEW ALL EMPLOYEES` TO SEE THE CHANGE============');
+                                console.log('')
+                                init();
+                            });
+                        })
+                })
+        })
 
 }
 
@@ -325,16 +329,4 @@ function exitDatabase() {
     db.end();
 }
 
-
 init();
-
-
-// write functions for actions
-// 1. for startup ---> what would you like to dO?
-// 2. functions for each actions
-// --- createEmployee()
-// --- viewEmployees()
-// ---- ..... etc
-// 3. Exit (Optional)
-
-
