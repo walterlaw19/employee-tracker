@@ -135,26 +135,29 @@ function addRole() {
 
 
 
-    // db.promise().query('SELECT department.department_name, department.id FROM department')
+    db.promise().query('SELECT department.department_name, department.id FROM department')
 
-    //     .then(([deptInData]) => {
-    //         console.log(deptInData);
-    //         // var dpt = deptInData.values(department_name);
-    //         // console.log(dpt)
+        .then(([deptInData]) => {
+            console.log(deptInData);
+            // var dpt = deptInData.values(department_name);
+            // console.log(dpt)
 
 
-    //         var department = deptInData.values((department_name, id) => ({
-    //             name: department_name,
-    //             value: id
-    //         }
-    //             , console.log(department)
-    //         ));
+            var department = deptInData.map((deptData) => {
+                return {
+                    name: deptData.department_name,
+                    value: deptData.id
+                }  
+            });
+            console.log(department)
 
-    db.query('SELECT * FROM department', (err, result) => {
-        if (err) throw err;
-        console.table(result);
+            
+
+    // db.query('SELECT * FROM department', (err, result) => {
+    //     if (err) throw err;
+    //     console.table(result);
         
-    })
+    // })
 
 
 
@@ -188,32 +191,45 @@ function addRole() {
                     }
                 },
                 
-                {
-                    type: 'number',
-                    name: 'roleInDepartment',
-                    message: 'Please Enter the ID Department Where This Role Wil Be Located',
-                    validate: roleSalary => {
-                        if (roleSalary) {
-                            return true;
-                        } else {
-                            console.log('Please a NUMERIC ID Department for role!');
-                            return false;
-                        }
-                    }
+                // {
+                //     type: 'number',
+                //     name: 'roleInDepartment',
+                //     message: 'Please Enter the ID Department Where This Role Wil Be Located',
+                //     validate: roleSalary => {
+                //         if (roleSalary) {
+                //             return true;
+                //         } else {
+                //             console.log('Please a NUMERIC ID Department for role!');
+                //             return false;
+                //         }
+                //     }
                     
-                },
+                // },
 
                
 
 // DYNAMIC version to add rol in already created DEPARTMENT BELOW
 
 
-                // {
-                //     type: 'list',
-                //     name: 'roleInDepartment',
-                //     message: 'Select a Department to add this role',
-                //     choices: [department] // needs to update HELP!!!!
-                // }
+                {
+                    type: 'list',
+                    name: 'roleInDepartment',
+                    message: 'Select a Department to add this role',
+                    choices: department// needs to update HELP!!!!
+
+                    /*
+                        [
+                            {
+                                name: "Blue",
+                                value: 1
+                            }, 
+                            {
+                                name: "Red",
+                                value: 2
+                            }
+                        ]
+                    */
+                }
 // DYNAMIC version to add rol in already created DEPARTMENT ABOVE
 
 
@@ -233,7 +249,7 @@ function addRole() {
                     })
                 });
             });
-        // })
+        })
 }
 
 
